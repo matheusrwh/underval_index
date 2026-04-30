@@ -6,7 +6,6 @@
 # Data: 29-04-2026
 # Fonte: PWT 11.0
 # -------------------------------------------
-
 import polars as pl
 import statsmodels.api as sm
 import matplotlib.pyplot as plt
@@ -22,6 +21,10 @@ figures = project_root / 'reports/figures'
 
 # ---------- Carregando dados
 pwt = pl.read_csv(data_interim / 'underval_index.csv')
+
+##########################################
+# FIGURAS
+##########################################
 
 # ---------- Construindo as visualizações
 countries = ["BRA", "CHN", "IND", "MEX"]
@@ -47,7 +50,7 @@ axs[1, 1].plot(df["year"], df["ln_underval"],
 
 for ax in axs.flat:
     ax.set_title(f"{ax.get_lines()[0].get_label()}")
-    ax.axhline(0, linestyle='--', linewidth=0.7, color='gray')
+    ax.axhline(0, linestyle='--', color='gray')
 
 fig.supylabel("Índice de desvalorização cambial (log)")
 
@@ -56,3 +59,22 @@ plt.show()
 
 # ---------- Salvando as visualizações
 fig.savefig(figures / 'underval_examples.png', dpi=300)
+
+##########################################
+# REGRESSÃO ESTILO RODRIK (2008)
+##########################################
+pwt = pwt.with_columns(
+    (pl.col('ln_gdppc').shift(1).over('iso3')).alias('ln_gdppc_lag')
+)
+
+pwt_pandas = pwt.to_pandas().set_index(["iso3", "year"])
+
+X = pwt_pandas[["ln_gdppc_lag", "ln_underval"]]
+y = pwt_pandas["gdppc_growth"]
+
+model = PanelOLS(y, X, entity_effects=True, time_effects=True)
+res = model.fit(cov_type='clustered', cluster_entity=True)
+
+# ln_gdppc_lag = -0,031*** em Rodrik (2008) com PWT 6.2
+# ln_underval = 0,017*** em Rodrik (2008) com PWT 6.2
+print(res.summary)
