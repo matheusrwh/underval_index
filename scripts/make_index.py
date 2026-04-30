@@ -78,5 +78,6 @@ pwt.head()
 # ---------- Salvando dados intermediários
 pwt.write_csv(data_interim / 'underval_index.csv')
 
+# ---------- Salvando dados para modelagem
 pwt_model = pwt.select(["iso3", "year", "ln_underval"])
 pwt_model.write_csv(data_processed / 'underval_index_model.csv')
