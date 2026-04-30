@@ -7,7 +7,7 @@
 # Fonte: PWT 11.0
 # -------------------------------------------
 import polars as pl
-import statsmodels.api as sm
+import statsmodels.formula.api as sm
 import matplotlib.pyplot as plt
 from linearmodels import PanelOLS
 from pathlib import Path
@@ -18,6 +18,7 @@ data_raw = project_root / 'data/raw'
 data_interim = project_root / 'data/interim'
 data_processed = project_root / 'data/processed'
 figures = project_root / 'reports/figures'
+models = project_root / 'reports/models'
 
 # ---------- Carregando dados
 pwt = pl.read_csv(data_interim / 'underval_index.csv')
@@ -25,8 +26,7 @@ pwt = pl.read_csv(data_interim / 'underval_index.csv')
 ##########################################
 # FIGURAS
 ##########################################
-
-# ---------- Construindo as visualizações
+# ---------- Trajetórias do índice de desvalorização em subplots
 countries = ["BRA", "CHN", "IND", "MEX"]
 line_color = ['maroon']
 
@@ -57,8 +57,26 @@ fig.supylabel("Índice de desvalorização cambial (log)")
 plt.tight_layout()
 plt.show()
 
-# ---------- Salvando as visualizações
 fig.savefig(figures / 'underval_examples.png', dpi=300)
+
+# ---------- Dispersão entre desvalorização cambial e crescimento
+fig_disp = plt.figure(figsize=(10, 6))
+
+pwt = pwt.drop_nulls(subset=["ln_underval", "gdppc_growth"])
+
+plt.scatter(pwt["ln_underval"], pwt["gdppc_growth"], alpha=0.5, color='maroon')
+
+fit = sm.ols("gdppc_growth ~ ln_underval", data=pwt.to_pandas()).fit()
+plt.plot(pwt["ln_underval"], fit.fittedvalues,
+         linestyle='--', linewidth=2, color='black')
+
+plt.xlabel("Índice de desvalorização cambial (log)")
+plt.ylabel("Crescimento do PIB per capita")
+plt.grid(True, linestyle='--', alpha=0.5)
+plt.tight_layout()
+plt.show()
+
+fig_disp.savefig(figures / 'underval_scatter.png', dpi=300)
 
 ##########################################
 # REGRESSÃO ESTILO RODRIK (2008)
@@ -77,4 +95,5 @@ res = model.fit(cov_type='clustered', cluster_entity=True)
 
 # ln_gdppc_lag = -0,031*** em Rodrik (2008) com PWT 6.2
 # ln_underval = 0,017*** em Rodrik (2008) com PWT 6.2
-print(res.summary)
+with open(models / "rodrik_style_regression.txt", "w") as f:
+    f.write(res.summary.as_text())
