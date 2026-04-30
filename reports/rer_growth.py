@@ -18,6 +18,7 @@ project_root = Path(__file__).resolve().parents[1]
 data_raw = project_root / 'data/raw'
 data_interim = project_root / 'data/interim'
 data_processed = project_root / 'data/processed'
+figures = project_root / 'reports/figures'
 
 # ---------- Carregando dados
 pwt = pl.read_csv(data_interim / 'underval_index.csv')
@@ -52,3 +53,6 @@ fig.supylabel("Índice de desvalorização cambial (log)")
 
 plt.tight_layout()
 plt.show()
+
+# ---------- Salvando as visualizações
+fig.savefig(figures / 'underval_examples.png', dpi=300)
