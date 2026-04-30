@@ -23,7 +23,7 @@ figures = project_root / 'reports/figures'
 # ---------- Carregando dados
 pwt = pl.read_csv(data_interim / 'underval_index.csv')
 
-# ---------- Construindo visualizações
+# ---------- Construindo as visualizações
 countries = ["BRA", "CHN", "IND", "MEX"]
 line_color = ['maroon']
 
