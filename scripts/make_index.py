@@ -1,5 +1,5 @@
 # -------------------------------------------
-# Estimativa do índice de desvalrização cambial
+# Estimativa do índice de desvalorização cambial
 # seguindo o procedimento de Rodrik (2008).
 #
 # Autor: Matheus Rosa
