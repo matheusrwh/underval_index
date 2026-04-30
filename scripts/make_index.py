@@ -1,6 +1,7 @@
 # -------------------------------------------
 # Estimativa do índice de desvalrização cambial
 # seguindo o procedimento de Rodrik (2008).
+#
 # Autor: Matheus Rosa
 # Data: 29-04-2026
 # Fonte: PWT 11.0
