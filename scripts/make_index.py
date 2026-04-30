@@ -75,4 +75,4 @@ pwt = pwt.with_columns(
 pwt.head()
 
 # ---------- Salvando dados intermediários
-pwt.write_excel(data_interim / 'underval_index.xlsx')
+pwt.write_csv(data_interim / 'underval_index.csv')
