@@ -46,10 +46,12 @@ pwt_raw = pwt_raw.with_columns(
 
 pwt = pwt_raw.select(["iso3", "Country", "year", "ln_rer", "ln_gdppc", "gdppc_growth"])
 
+pwt = pwt.rename({'iso3': 'country_code'})
+
 pwt.head()
 
 # ---------- Correção do efeito Balassa-Samuelson
-pwt_pandas = pwt.to_pandas().set_index(["iso3", "year"])
+pwt_pandas = pwt.to_pandas().set_index(["country_code", "year"])
 
 y = pwt_pandas["ln_rer"]
 X = pwt_pandas["ln_gdppc"]
@@ -79,5 +81,5 @@ pwt.head()
 pwt.write_csv(data_interim / 'underval_index.csv')
 
 # ---------- Salvando dados para modelagem
-pwt_model = pwt.select(["iso3", "year", "ln_underval"])
+pwt_model = pwt.select(["country_code", "year", "ln_underval"])
 pwt_model.write_csv(data_processed / 'underval_index_model.csv')
