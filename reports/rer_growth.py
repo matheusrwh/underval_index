@@ -26,6 +26,19 @@ pwt = pl.read_csv(data_interim / 'underval_index.csv')
 ##########################################
 # FIGURAS
 ##########################################
+# ---------- Histograma alisado do índice de desvalorização cambial
+plt.figure(figsize=(10, 6))
+
+pwt = pwt.drop_nulls(subset=["ln_underval"])
+
+plt.hist(pwt["ln_underval"], bins=30, density=True, alpha=0.6, color='maroon')
+plt.xlabel("Índice de desvalorização cambial (log)")
+plt.ylabel("Densidade")
+
+plt.grid(True, linestyle='--', alpha=0.5)
+plt.tight_layout()
+plt.show()
+
 # ---------- Trajetórias do índice de desvalorização em subplots
 countries = ["BRA", "CHN", "IND", "MEX"]
 line_color = ['maroon']

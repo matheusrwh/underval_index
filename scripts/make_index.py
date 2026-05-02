@@ -75,8 +75,6 @@ pwt = pwt.with_columns(
     (pl.col("ln_rer") - pl.col("ln_rer_hat")).alias("ln_underval")
 )
 
-pwt.head()
-
 # ---------- Salvando dados intermediários
 pwt.write_csv(data_interim / 'underval_index.csv')
 
